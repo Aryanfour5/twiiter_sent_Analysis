@@ -6,7 +6,7 @@ pipeline {
     stages {
         stage('Clone Repository') {
             steps {
-                git 'https://github.com/Aryanfour5/twiiter_sent_Analysis.git'
+                git branch: 'main', url: 'https://github.com/Aryanfour5/twiiter_sent_Analysis.git'
             }
         }
 
