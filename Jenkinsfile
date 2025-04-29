@@ -1,42 +1,29 @@
 pipeline {
     agent any
-
     environment {
-        SONAR_TOKEN = credentials('sonar-token')
+        SONAR_TOKEN = credentials('sonar-token') // Ensure this matches your Jenkins credentials
     }
-
+    tools {
+        sonarScanner 'SonarQubeScanner' // Make sure this is defined in your Global Tool Configuration
+    }
     stages {
-        stage('Checkout Code') {
+        stage('Clone Repository') {
             steps {
-                git branch: 'main', url: 'https://github.com/Aryanfour5/twiiter_sent_Analysis.git'
-            }
-        }
-
-        stage('Install Python & Pip') {
-            steps {
-                sh '''
-                    apt-get update
-                    apt-get install -y python3 python3-pip
-                '''
+                git 'https://github.com/Aryanfour5/twiiter_sent_Analysis.git'
             }
         }
 
         stage('Install Dependencies') {
             steps {
-                sh 'python3 -m pip install -r requirements.txt'
+                // Assuming Python and pip are already installed
+                sh 'pip install -r requirements.txt'
             }
         }
 
         stage('Run SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('SonarQube') {
-                    sh '''
-                        sonar-scanner \
-                          -Dsonar.projectKey=TwitterSentiment \
-                          -Dsonar.sources=. \
-                          -Dsonar.host.url=http://localhost:9000 \
-                          -Dsonar.login=$SONAR_TOKEN
-                    '''
+                    sh 'sonar-scanner -Dsonar.login=$SONAR_TOKEN'
                 }
             }
         }
