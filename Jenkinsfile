@@ -2,11 +2,7 @@ pipeline {
     agent any
 
     environment {
-        SONAR_TOKEN = credentials('sonar-token') // This must match the ID in Jenkins Credentials
-    }
-
-    tools {
-        sonarScanner 'SonarQubeScanner' // This must match the tool name in "Global Tool Configuration"
+        SONAR_TOKEN = credentials('sonar-token') // Ensure this matches your Jenkins credential ID
     }
 
     stages {
@@ -24,7 +20,7 @@ pipeline {
 
         stage('Run SonarQube Analysis') {
             steps {
-                withSonarQubeEnv('SonarQube') { // Match this to the name configured under "SonarQube servers"
+                withSonarQubeEnv('SonarQube') { // Must match the name in "Manage Jenkins > Configure System"
                     sh '''
                         sonar-scanner \
                           -Dsonar.projectKey=TwitterSentiment \
