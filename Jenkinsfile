@@ -5,8 +5,7 @@ pipeline {
         PATH = "/usr/bin/python3:$PATH"
     }
     tools {
-        // Add your tools configuration here
-        // e.g., sonarScanner 'SonarQubeScanner' if SonarQube is set up
+    nodejs "nodejs" // match the name you gave above
     }
     stages {
         stage('Checkout SCM') {
