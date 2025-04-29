@@ -1,10 +1,5 @@
 pipeline {
-    agent {
-        docker {
-            image 'python:3.10' // Any official Python image will work
-            args '-u root' // optional: run as root to install system-level packages
-        }
-    }
+    agent any
 
     environment {
         SONAR_TOKEN = credentials('sonar-token')
@@ -17,9 +12,18 @@ pipeline {
             }
         }
 
+        stage('Install Python & Pip') {
+            steps {
+                sh '''
+                    apt-get update
+                    apt-get install -y python3 python3-pip
+                '''
+            }
+        }
+
         stage('Install Dependencies') {
             steps {
-                sh 'pip install -r requirements.txt'
+                sh 'python3 -m pip install -r requirements.txt'
             }
         }
 
