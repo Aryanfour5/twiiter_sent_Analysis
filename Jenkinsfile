@@ -1,8 +1,13 @@
 pipeline {
-    agent any
+    agent {
+        docker {
+            image 'python:3.10' // Any official Python image will work
+            args '-u root' // optional: run as root to install system-level packages
+        }
+    }
 
     environment {
-        SONAR_TOKEN = credentials('sonar-token') // Ensure this matches your Jenkins credential ID
+        SONAR_TOKEN = credentials('sonar-token')
     }
 
     stages {
@@ -20,7 +25,7 @@ pipeline {
 
         stage('Run SonarQube Analysis') {
             steps {
-                withSonarQubeEnv('SonarQube') { // Must match the name in "Manage Jenkins > Configure System"
+                withSonarQubeEnv('SonarQube') {
                     sh '''
                         sonar-scanner \
                           -Dsonar.projectKey=TwitterSentiment \
