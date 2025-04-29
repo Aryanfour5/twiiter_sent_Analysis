@@ -1,31 +1,77 @@
 pipeline {
     agent any
     environment {
-        SONAR_TOKEN = credentials('sonar-token') // Ensure this matches your Jenkins credentials
+        // Set PATH to include Python if not already in the default path
+        PATH = "/usr/bin/python3:$PATH"
+    }
+    tools {
+        // Add your tools configuration here
+        // e.g., sonarScanner 'SonarQubeScanner' if SonarQube is set up
     }
     stages {
-        stage('Clone Repository') {
+        stage('Checkout SCM') {
             steps {
-                git branch: 'main', url: 'https://github.com/Aryanfour5/twiiter_sent_Analysis.git'
+                checkout scm
+            }
+        }
+        
+        stage('Install Python & Pip') {
+            steps {
+                script {
+                    // Install Python 3 and pip if they are not already installed
+                    sh '''
+                    apt-get update -y
+                    apt-get install -y python3 python3-pip
+                    '''
+                }
             }
         }
 
         stage('Install Dependencies') {
             steps {
-                // Assuming Python and pip are already installed
-                sh 'pip install -r requirements.txt'
+                script {
+                    // Install the dependencies from the requirements.txt file
+                    sh '''
+                    pip3 install -r requirements.txt
+                    '''
+                }
             }
         }
 
         stage('Run SonarQube Analysis') {
             steps {
                 script {
-                    // Run SonarQube analysis using the SonarQube Scanner
-                    withSonarQubeEnv('SonarQube') {
-                        sh 'sonar-scanner -Dsonar.login=$SONAR_TOKEN'
-                    }
+                    // Make sure SonarQube is set up in your Jenkins instance
+                    // This step assumes that SonarQube is already configured in Jenkins
+                    sonarScanner 'SonarQubeScanner' // Replace with your SonarQube tool name if different
                 }
             }
+        }
+
+        stage('Run Tests') {
+            steps {
+                // Example of running tests (replace with your actual test command)
+                sh 'pytest'
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                // Add your deployment steps here (e.g., deploying to production/staging)
+                echo 'Deploying application...'
+            }
+        }
+    }
+
+    post {
+        always {
+            cleanWs() // Clean workspace after build to avoid issues in the next build
+        }
+        success {
+            echo 'Build was successful!'
+        }
+        failure {
+            echo 'Build failed.'
         }
     }
 }
