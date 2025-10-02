@@ -1,2 +1,3 @@
 fine_tuned_distilbert/model.safetensors
 .env
+.venv/
