@@ -1,3 +1,4 @@
+import os
 from flask import Flask, jsonify, Response
 import time
 import random
@@ -23,7 +24,7 @@ def home():
     return jsonify({
         'message': 'Flask Monitoring Demo', 
         'status': 'healthy',
-        'version': '1.0'
+        'version': '2.0'
     })
 
 @app.route('/health')
@@ -31,6 +32,10 @@ def health():
     global request_count
     request_count += 1
     return jsonify({'status': 'healthy'})
+
+@app.route("/version")
+def version():
+    return "v1", 200
 
 @app.route('/api/data')
 def get_data():
