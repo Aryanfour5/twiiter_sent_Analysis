@@ -1,0 +1,14 @@
+venv
+__pycache__
+*.pyc
+*.pkl
+*.ckpt
+*.h5
+*.pt
+data/
+images/
+*.csv
+.git
+.gitignore
+.env
+.ipynb_checkpoints
